@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/com/cutehacks/pusher">
+        <file>qmldir</file>
+        <file>Pusher.qml</file>
+        <file>Channel.qml</file>
+        <file>pusher.js</file>
+        <file>Bind.qml</file>
+        <file>BindingList.qml</file>
+    </qresource>
+</RCC>

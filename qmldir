@@ -1,0 +1,6 @@
+module com.cutehacks.pusher
+Pusher 1.0 Pusher.qml
+Channel 1.0 Channel.qml
+Bind 1.0 Bind.qml
+internal BindingList BindingList.qml
+internal PusherJS pusher.js
