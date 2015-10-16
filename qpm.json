@@ -7,14 +7,14 @@
   },
   "repository": {
     "type": "GITHUB",
-    "url": ""
+    "url": "https://github.com/Cutehacks/qml-pusher.git"
   },
   "version": {
-    "label": "0.7.0",
+    "label": "0.7.0"
   },
   "dependencies": [
   ],
   "license": "MIT",
   "pri_filename": "com_cutehacks_pusher.pri",
-  "webpage": ""
+  "webpage": "https://github.com/Cutehacks/qml-pusher"
 }
