@@ -15,6 +15,7 @@ Item {
     property alias auth: connection.auth
     property alias cluster: connection.cluster
     property alias disableStats: connection.disableStats
+    property alias pingTimeout: connection.pingTimeout
     readonly property alias state: connection.state
 
     readonly property bool initialized:     connection.state == "initialized"
