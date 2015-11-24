@@ -24,5 +24,13 @@ function Event(message, data) {
     }
 }
 
+function warn(arg1, arg2) {
+    console.warn(arg1, arg2);
+}
 
+function requiresAuth(name) {
+    var isPrivate = name.indexOf("private-") === 0;
+    var isPresence = name.indexOf("presence-") === 0;
+    return isPrivate || isPresence;
+}
 

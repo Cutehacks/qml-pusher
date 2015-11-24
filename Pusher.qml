@@ -63,7 +63,7 @@ Item {
                 name: "connected"
             },
             State {
-               name: "unavailable"
+                name: "unavailable"
             },
             State {
                 name: "failed"
@@ -77,6 +77,7 @@ Item {
         property int pingTimeout: 30
 
         // Internal properties
+        property string socketId: ""
         property int _protocol: 7
         property string _client: Qt.platform.os + "-libQtPusher"
         property string _version: "1.9.3"
@@ -89,13 +90,59 @@ Item {
 
         property var _channels: ({})
 
-        function subscribe(channel, callback, data) {
-            var data = data;
-            if (!data) {
-                data = {
-                    "channel": channel
-                }
+        function authorize(channelName, callback) {
+            if (!connection.auth.headers && !connection.auth.params) {
+                Pusher.warn("No 'auth' fields found.")
             }
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", connection.authEndpoint);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            for(var headerName in connection.auth.headers) {
+                xhr.setRequestHeader(headerName, connection.auth.headers[headerName]);
+            }
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        var data, parsed = false;
+
+                        try {
+                            data = JSON.parse(xhr.responseText);
+                            parsed = true;
+                        } catch (e) {
+                            callback(true, 'JSON returned from webapp was invalid, yet status code was 200. Data was: ' + xhr.responseText);
+                        }
+
+                        if (parsed) { // prevents double execution.
+                            callback(false, data);
+                        }
+                    } else {
+                        Pusher.warn("Couldn't get auth info from your webapp", xhr.status);
+                        callback(true, xhr.status);
+                    }
+                }
+            };
+
+            var data = connection.composeQuery(channelName, connection.socketId);
+            console.log(JSON.stringify(data, null, 4));
+            xhr.send(data);
+        }
+
+        function composeQuery(channelName, socketId) {
+            var query = 'socket_id=' + encodeURIComponent(socketId) +
+                    '&channel_name=' + encodeURIComponent(channelName);
+
+            for(var i in connection.auth.params) {
+                query += "&" + encodeURIComponent(i) + "=" + encodeURIComponent(connection.auth.params[i]);
+            }
+
+            return query;
+        }
+
+        function subscribe(channel, callback, data) {
+            var data = data || {};
+            data.channel = channel;
 
             var e = new Pusher.Event("pusher:subscribe", data);
             sendEvent(e);
@@ -127,8 +174,9 @@ Item {
         }
 
         function handleConnectionEstablished(event) {
-            connection.state = "connected";
+            connection.socketId = event.data.socket_id;
             connection.autoPingInterval = event.data.activity_timeout;
+            connection.state = "connected";
         }
 
         function handleError(event) {
