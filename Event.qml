@@ -4,7 +4,7 @@
 import QtQuick 2.0
 
 Item {
-    property string event: ""
+    property string name: ""
     signal triggered(var event)
 
     function _trigger(event) {
@@ -17,7 +17,7 @@ Item {
     }
 
     Component.onCompleted: {
-        parent.bind(event, _trigger);
+        parent.bind(name, _trigger);
     }
 }
 
