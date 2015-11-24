@@ -40,39 +40,39 @@ import com.cutehacks.pusher 1.0
             id: fooChannel
             name: "foo"
 
-            // Declare a Bind that will be triggered for all events on this
+            // Declare an Event that will be triggered for all events on this
             // channel
-            Bind {
+            Event {
                 onTriggered: {
-                    console.log("channel bind called: " + fooChannel.name);
+                    console.log("channel event triggered: " + fooChannel.name);
                     console.log(JSON.stringify(event, null, 4));
                 }
             }
 
-            // Declare a Bind that will be triggered for a specific event
-            Bind {
-                event: "bar"
+            // Declare an Event that will be triggered for a specific event
+            Event {
+                name: "bar"
                 onTriggered: {
-                    console.log("channel bind called for event: " + fooChannel.name);
+                    console.log("channel event triggered for: " + fooChannel.name);
                     console.log(JSON.stringify(event, null, 4));
                 }
             }
         }
 
-        // Declare a Bind that will be triggered for all events on all channels
-        Bind {
+        // Declare an Event that will be triggered for all events on all channels
+        Event {
             onTriggered: {
-                console.log("pusher bind called");
+                console.log("pusher event triggered");
                 console.log(JSON.stringify(event, null, 4));
             }
         }
 
-        // Declare a Bind that will be triggered for a specific event on
+        // Declare an Event that will be triggered for a specific event on
         // all channels
-        Bind {
-            event: "bar"
+        Event {
+            name: "bar"
             onTriggered: {
-                console.log("pusher bind called for event");
+                console.log("pusher event triggered: " + name);
                 console.log(JSON.stringify(event, null, 4));
             }
         }
@@ -100,7 +100,7 @@ Specifies the time in seconds that the client should wait before triggering a ti
 timeout occurs, the state property will be "unavailable" and the module will automatically
 call the ping() function at intervals specified by this property.
 
-#### state : string ["initial"]
+#### state : string ["initialized"]
 
 Indicates the current state of the connection. Each state is also available as a boolean
 property on this object (eg: connected). This is done as a convenience so you can trigger
@@ -113,7 +113,7 @@ Pusher.
 
 #### ping() : function
 
-Sends a ping request Pusher and resets the internal timeout timer as well as the inactivity timer.
+Sends a ping request to Pusher and resets the internal timeout timer as well as the inactivity timer.
 Normally you should not need to call this function as it is called internally by the module.
 
 #### disconnect() :  function
@@ -150,12 +150,12 @@ as the child of a `Pusher` item.
 
 The name of the channel you want to subscribe to.
 
-### Bind
+### Event
 
-This item represents a binding to a particular event type. A `Bind` must be decalred as a child
+This item represents a binding to a particular event type. An `Event` must be declared as a child
 of a `Pusher` item or a `Channel` item.
 
-#### event : string
+#### name : string
 
 The type of event to listen for. Omitting this property will create a binding for all events.
  
@@ -167,7 +167,6 @@ This signal is emitted whenever a new event arrives.
 
 The following pieces of functionality are not yet implemented:
 
-* Private Channels
 * Presence Channels
-* Channel CLient Events
+* Channel Client Events
 
