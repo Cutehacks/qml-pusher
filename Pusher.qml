@@ -125,7 +125,6 @@ Item {
             };
 
             var data = connection.composeQuery(channelName, connection.socketId);
-            console.log(JSON.stringify(data, null, 4));
             xhr.send(data);
         }
 
@@ -186,8 +185,6 @@ Item {
         function sendEvent(event) {
             var message = JSON.stringify(event);
             socket.sendTextMessage(message);
-            console.log("sending...");
-            console.log(JSON.stringify(event, null, 4))
             inactivityTimer.restart();
             timeoutTimer.restart();
         }
@@ -224,7 +221,6 @@ Item {
             active: true
 
             onTextMessageReceived: {
-                console.log(message);
                 inactivityTimer.restart();
                 timeoutTimer.stop();
                 var e = new Pusher.Event(message);
