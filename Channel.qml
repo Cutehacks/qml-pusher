@@ -5,23 +5,38 @@ import QtQuick 2.0
 import "pusher.js" as Pusher
 
 Item {
+    id: channel
     default property alias bindings: bindings.children
     property string name: ""
-    property bool subscribed: false
-    property bool subscriptionSucceeded: false
-    property bool subscriptionError: false
+    property bool active: true
 
-    property bool connected: parent.state == "connected"
+    readonly property alias subscribed: channel._subscribed
 
     property bool _authenticated: false
+    property string _oldName: name
+    property bool _connected: parent.state == "connected"
+    property bool _subscribed: false
 
-    function handleEvent(event) {
+    function _handleEvent(event) {
+        if (event.event == "pusher_internal:subscription_succeeded") {
+            _subscribed = true;
+            _oldName = name;
+        }
         bindings.dispatchEvent(event);
     }
 
-    function updateAuthStatus(err, response) {
+    function _updateAuthStatus(err, response) {
         if (err) {
-            return
+            var errEvent = {
+                data: {
+                    code: response,
+                    message: "Forbidden"
+                }
+            }
+            parent.handleError(errEvent);
+            _subscribed = false;
+            _authenticated = false;
+            return;
         }
 
         if (response.auth) {
@@ -31,17 +46,44 @@ Item {
                 auth: response.auth
             };
 
-            parent.subscribe(name, handleEvent, data);
+            _subscribe(data);
         }
     }
 
-    onConnectedChanged: {
-        if (connected) {
+    function _subscribe(data) {
+        if (_connected) {
             if (Pusher.requiresAuth(name) && !_authenticated) {
-                parent.authorize(name, updateAuthStatus);
+                parent.authorize(name, _updateAuthStatus);
             } else {
-                parent.subscribe(name, handleEvent);
+                parent.subscribe(name, _handleEvent, data);
             }
+        }
+    }
+
+    function _unsubscribe() {
+        if (_connected && subscribed) {
+            parent.unsubscribe(_oldName);
+            _subscribed = false;
+            _authenticated = false;
+        }
+    }
+
+    onNameChanged: {
+        _unsubscribe();
+        _subscribe();
+    }
+
+    onActiveChanged: {
+        if (active) {
+            _subscribe();
+        } else {
+            _unsubscribe();
+        }
+    }
+
+    on_ConnectedChanged: {
+        if (active) {
+            _subscribe();
         }
     }
 
