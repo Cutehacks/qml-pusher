@@ -150,6 +150,14 @@ as the child of a `Pusher` item.
 
 The name of the channel you want to subscribe to.
 
+#### active : bool
+
+Whether or not the channel should be active and therefore listening to events.
+
+#### subscribed : readonly bool
+
+Indicates that the channel is properly subscribed and listening for events.
+
 ### Event
 
 This item represents a binding to a particular event type. An `Event` must be declared as a child
