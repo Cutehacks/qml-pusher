@@ -149,6 +149,8 @@ Item {
         }
 
         function unsubscribe(channel) {
+            var data = data || {};
+            data.channel = channel;
             var e = new Pusher.Event("pusher:unsubscribe", data);
             sendEvent(e);
             delete _channels[channel];
