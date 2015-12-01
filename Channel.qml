@@ -51,7 +51,9 @@ Item {
     }
 
     function _subscribe(data) {
-        if (_connected) {
+        var validName = (name != "" && name != "private-");
+
+        if (_connected && active && validName) {
             if (Pusher.requiresAuth(name) && !_authenticated) {
                 parent.authorize(name, _updateAuthStatus);
             } else {
