@@ -225,6 +225,10 @@ Item {
             onTextMessageReceived: {
                 inactivityTimer.restart();
                 timeoutTimer.stop();
+
+                if (connection.state !== "connected")
+                    connection.state = "connected";
+
                 var e = new Pusher.Event(message);
 
                 // Handle event locally first
