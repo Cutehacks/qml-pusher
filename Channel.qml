@@ -86,6 +86,9 @@ Item {
     on_ConnectedChanged: {
         if (active) {
             _subscribe();
+        } else {
+            _subscribed = false;
+            _authenticated = false;
         }
     }
 
