@@ -226,9 +226,6 @@ Item {
                 inactivityTimer.restart();
                 timeoutTimer.stop();
 
-                if (connection.state !== "connected")
-                    connection.state = "connected";
-
                 var e = new Pusher.Event(message);
 
                 // Handle event locally first
@@ -236,6 +233,9 @@ Item {
                 if (handler) {
                     handler(e);
                 }
+
+                if (connection.state !== "connected" && connection.socketId != "")
+                    connection.state = "connected";
 
                 // Dispatch event to registered channels
                 if (e.channel) {
