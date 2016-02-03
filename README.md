@@ -120,6 +120,9 @@ Normally you should not need to call this function as it is called internally by
 
 Disconnects from Pusher.
 
+#### reconnect() :  function
+
+Reconnects to Pusher. Useful after a network disruption.
 
 #### authEndpoint : string ["/pusher/auth"]
 
