@@ -32,6 +32,11 @@ Item {
         socket.active = false;
     }
 
+    function reconnect() {
+        socket.active = false;
+        socket.active = true;
+    }
+
     function ping() {
         connection.ping();
     }

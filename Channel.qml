@@ -63,7 +63,7 @@ Item {
     }
 
     function _unsubscribe() {
-        if (_connected && subscribed) {
+        if (subscribed) {
             parent.unsubscribe(_oldName);
             _subscribed = false;
             _authenticated = false;
@@ -84,11 +84,10 @@ Item {
     }
 
     on_ConnectedChanged: {
-        if (active) {
+        if (active && _connected) {
             _subscribe();
         } else {
-            _subscribed = false;
-            _authenticated = false;
+            _unsubscribe();
         }
     }
 
