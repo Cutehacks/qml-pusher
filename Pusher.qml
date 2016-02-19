@@ -8,6 +8,7 @@ import "pusher.js" as Pusher
 Item {
     id: client
     default property alias connection: connection.children
+    property alias active: socket.active
     property alias appKey: connection.appKey
     property alias encrypted: connection.encrypted
     property alias authEndpoint: connection.authEndpoint
@@ -190,10 +191,12 @@ Item {
         }
 
         function sendEvent(event) {
-            var message = JSON.stringify(event);
-            socket.sendTextMessage(message);
-            inactivityTimer.restart();
-            timeoutTimer.restart();
+            if (socket.active) {
+                var message = JSON.stringify(event);
+                socket.sendTextMessage(message);
+                inactivityTimer.restart();
+                timeoutTimer.restart();
+            }
         }
 
         Timer {
@@ -252,6 +255,13 @@ Item {
 
                 // Dispatch events to any Bind elements on Pusher item
                 connection.dispatchEvent(e);
+            }
+
+            onActiveChanged: {
+                if (!active) {
+                    timeoutTimer.stop();
+                    inactivityTimer.stop();
+                }
             }
 
             onStatusChanged: {
