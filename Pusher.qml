@@ -221,7 +221,7 @@ Item {
         WebSocket {
             id: socket
             url: (connection.encrypted ? "wss" : "ws") +
-                 "://ws.pusherapp.com:" +
+            "://ws-"+connection.cluster+".pusher.com:" +
                  (connection.encrypted ? "443" : "80") +
                  "/app/" + connection.appKey + "?" +
                  "protocol=" + connection._protocol +
